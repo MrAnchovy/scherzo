@@ -1,0 +1,9 @@
+{
+  "name": "Scherzo",
+  "version": "0.0.0-dev",
+  "devDependencies": {
+    "grunt": "~0.4.1",
+    "grunt-phpunit": "*",
+    "grunt-phpdocumentor": "~0.4.1"
+  }
+}
