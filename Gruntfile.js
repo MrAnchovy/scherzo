@@ -14,27 +14,9 @@ module.exports = function(grunt) {
       }
     },
 
-    phpdocumentor: {
-        options: {
-            // phar : null,
-            command   : 'list',
-        },
-        docs: {
-          options: {
-              directory : 'classes',
-              target    : 'docs/api'
-          }
-        }
-
-    }
-
   });
 
   grunt.loadNpmTasks('grunt-phpunit');
-
-  grunt.loadNpmTasks('grunt-phpdocumentor');
-
-  grunt.registerTask('docs', ['phpdocumentor']);
 
   grunt.registerTask('default', ['phpunit']);
 
