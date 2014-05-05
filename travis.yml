@@ -6,5 +6,7 @@ php:
   - 5.3
   - hhvm
 
+script: phpunit test/tests
+
 before_script:
   - npm install -g grunt-cli
