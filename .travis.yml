@@ -8,5 +8,6 @@ php:
 
 script: phpunit test/tests
 
-before_script:
-  - npm install -g grunt-cli
+# not currently using grunt for ci build
+# before_script:
+#  - npm install -g grunt-cli
