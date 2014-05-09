@@ -17,11 +17,22 @@ use Scherzo\Scherzo;
 // include the class file
 require_once __DIR__.'/../../../classes/Scherzo/Scherzo.php';
 
+// include requirements
+require_once __DIR__.'/../../../classes/Scherzo/Core/ScherzoException.php';
+require_once __DIR__.'/../../../classes/Scherzo/Core/Service.php';
+
 /**
  * Mock service.
 **/
-class TestService
+class TestService extends \Scherzo\Core\Service
 {
+    /**
+     * Make sure we know who we are.
+    **/
+    public function getName()
+    {
+        return $this->name;
+    }
 }
 
 /**
@@ -34,19 +45,10 @@ class Scherzo_Scherzo_UnitTest extends \PHPUnit_Framework_Testcase
      * @covers  __get
      * @covers  __set
     **/
-    function getService()
-    {
-        return new TestService;
-    }
-
-    /**
-     * @covers  __get
-     * @covers  __set
-    **/
     function test_A_service_can_be_loaded()
     {
         $container = new Scherzo;
-        $testService = $this->getService();
+        $testService = new TestService(null, null);
         $container->testService = $testService;
         $this->assertSame($testService, $container->testService);
     }
@@ -61,9 +63,9 @@ class Scherzo_Scherzo_UnitTest extends \PHPUnit_Framework_Testcase
     function test_An_existing_service_cannot_be_overloaded()
     {
         $container = new Scherzo;
-        $container->testService = $this->getService();
+        $container->testService = new TestService(null, null);
         // should throw an Exception
-        $container->testService = $this->getService();
+        $container->testService = new TestService(null, null);
     }
 
     /**
@@ -73,8 +75,27 @@ class Scherzo_Scherzo_UnitTest extends \PHPUnit_Framework_Testcase
     function test_A_service_can_be_registered_and_lazy_loaded()
     {
         $container = new Scherzo;
-        $container->register('testService', 'Scherzo\Test\TestService');
+        $container->register('testService', __NAMESPACE__.'\TestService');
         $this->assertInstanceOf('Scherzo\Test\TestService', $container->testService);
     }
 
+    /**
+     * @covers  register
+     * @covers  load
+     * @covers  __set
+    **/
+    function test_A_service_can_be_loaded_with_an_optional_alias()
+    {
+        // set up
+        $container = new Scherzo;
+        $container->register('testService', __NAMESPACE__.'\TestService');
+
+        // without an alias
+        $container->load('testService');
+        $this->assertSame('testService', $container->testService->getName());
+
+        // with an alias
+        $container->load('testService', 'testAlias');
+        $this->assertSame('testAlias', $container->testAlias->getName());
+    }
 }

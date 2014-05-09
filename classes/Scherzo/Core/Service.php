@@ -38,9 +38,10 @@ abstract class Service
      * Final constructor.
      *
      * This is made final to avoid omission of a call to `parent::__construct()`
-     * in implementing classes. See `beforeConstruct()` and `afterConstruct()`.
+     * in implementing classes. See `afterConstruct()`.
      *
-     * @var  Scherzo\Scherzo  The dependency injection container.
+     * @param  Scherzo\Scherzo  $depends  The dependency injection container.
+     * @param  string           $name     The name the service is loaded as.
     **/
     final public function __construct($depends, $name)
     {

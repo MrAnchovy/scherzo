@@ -51,9 +51,9 @@ class Scherzo
     public function __set($name, $value)
     {
         if (isset($this->_loaded[$name])) {
-            throw new Exception(strtr(
+            throw new ScherzoException(array(
                 'Service ":service" cannot be overloaded',
-                array(':service' => $name)));
+                ':service' => $name));
         }
         $this->_loaded[$name] = $value;
     }
@@ -75,16 +75,26 @@ class Scherzo
     /**
      * Load defined service.
      *
-     * @param  string  $name The name of the service.
+     * @param  string  $name   The name the service is registered with.
+     * @param  string  $alias  Optional alias to use for the service.
     **/
-    protected function load($name)
+    public function load($name, $alias = null)
     {
-        if (!isset($this->_registered[$name])) {
-            throw new Exception(strtr(
-                'Cannot load unregistered service ":service"',
-                array(':service' => $name)));
+        if ($alias === null) {
+            $alias = $name;
         }
-        $this->_loaded[$name] = new $this->_registered[$name]($this, $name);
+        if (isset($this->_loaded[$alias])) {
+            throw new ScherzoException(array(
+                'Cannot overlad existing service ":alias" with registered service ":service"',
+                ':alias' => $name,
+                ':service' => $name));
+        }
+        if (!isset($this->_registered[$name])) {
+            throw new ScherzoException(array(
+                'Cannot load unregistered service ":service"',
+                ':service' => $name));
+        }
+        $this->_loaded[$alias] = new $this->_registered[$name]($this, $alias);
     }
 
 } // end class Scherzo
