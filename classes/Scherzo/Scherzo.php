@@ -9,7 +9,7 @@
 
 namespace Scherzo;
 
-use Exception, Scherzo\ScherzoException;
+use Exception, Scherzo\Core\ScherzoException;
 
 /**
  * Scherzo dependency injection container.
@@ -22,11 +22,11 @@ class Scherzo
     /** Version identification. */
     const VERSION = '0.0.0-dev';
 
-    /** Defined services. */
-    protected $_defined = array();
-
     /** Loaded services. */
     protected $_loaded = array();
+
+    /** Registered services. */
+    protected $_registered = array();
 
     /**
      * Retrieve or lazy-load a service.
@@ -59,14 +59,17 @@ class Scherzo
     }
 
     /**
-     * Define a service.
+     * Register a service.
      *
      * @param  string        $name    The name of the service.
      * @param  string|array  $service The class name or array defining the service.
     **/
-    public function define($name, $service)
+    public function register($name, $service = null)
     {
-        $this->_defined[$name] = $service;
+        if (is_array($name)) {
+            $this->_registered = array_merge($this->_registered, $name);
+        }
+        $this->_registered[$name] = $service;
     }
 
     /**
@@ -76,12 +79,12 @@ class Scherzo
     **/
     protected function load($name)
     {
-        if (!isset($this->_defined[$name])) {
+        if (!isset($this->_registered[$name])) {
             throw new Exception(strtr(
-                'Cannot load undefined service ":service"',
+                'Cannot load unregistered service ":service"',
                 array(':service' => $name)));
         }
-        $this->_loaded[$name] = new $this->_defined[$name];
+        $this->_loaded[$name] = new $this->_registered[$name]($this, $name);
     }
 
 } // end class Scherzo

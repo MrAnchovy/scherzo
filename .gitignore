@@ -1,2 +1,4 @@
 /node_modules
 composer.lock
+build/docs/
+build/phpDocumentor.phar
