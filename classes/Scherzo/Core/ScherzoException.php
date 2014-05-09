@@ -40,7 +40,7 @@ class ScherzoException extends Exception
     public function __construct($message = null, $code = 0, $previous = null)
     {
         if (is_array($message)) {
-            $msg = array_unshift($message);
+            $msg = array_shift($message);
             try {
                 $message = strtr($msg, $message);
             } catch (Exception $ee) {
