@@ -12,12 +12,14 @@ module.exports = function(grunt) {
           // bootstrap: 'test/phpunit/bootstrap.php',
           colors: true
       }
-    },
+    }
 
   });
 
   grunt.loadNpmTasks('grunt-phpunit');
 
-  grunt.registerTask('default', ['phpunit']);
+  grunt.registerTask('unittest', ['phpunit']);
+
+  grunt.registerTask('default', ['unittest']);
 
 };

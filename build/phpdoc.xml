@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<phpdoc>
+	<title>Scherzo 0.0.0-dev</title>
+	<parser>
+		<target>docs/working</target>
+	</parser>
+	<transformer>
+		<target>docs/api</target>
+	</transformer>
+	<transformations>
+<!--
+		<template name="responsive-twig" />
+-->
+		<template name="clean" />
+	</transformations>
+	<files>
+		<file>../index.php</file>
+		<directory>../classes</directory>
+	</files>
+</phpdoc>
