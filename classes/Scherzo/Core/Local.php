@@ -16,6 +16,7 @@ use Exception, Scherzo\Core\ScherzoException;
 **/
 class Local
 {
+    /** Initial options set in `index.php`. */
     protected $coreInitialOptions;
 
     /** Set this to an object in the constructor to override the Scherzo autoloader. */
@@ -24,13 +25,19 @@ class Local
     /** Set this to an object in the constructor to override the Scherzo container. */
     public $coreContainerObject;
 
+    /** The controller used to display 404 etc. errors. */
+    public $coreErrorController = '\Scherzo\Core\ErrorController';
+
     /** The timezone to use if it is not forced or set in php.ini. */
     public $coreFallbackTimezone = 'UTC';
 
-    /** Default services. */
-    public $coreDefaultServices = array(
+    /** Default services - do not modify this, use `$coreServices` instead. */
+    private $coreDefaultServices = array(
         'frontController' => 'Scherzo\Core\FrontController',
         'phpFlow' => 'Scherzo\Core\PhpFlow',
+        'httpRequest' => 'Scherzo\Core\HttpRequest',
+        'cliRequest' => 'Scherzo\Core\CliRequest',
+        'testRequest' => 'Scherzo\Core\TestRequest',
     );
 
     /** Additional services. */
@@ -42,12 +49,14 @@ class Local
     public function __construct($initialOptions)
     {
         $this->coreInitialOptions = $initialOptions;
+        $this->coreBaseUrl    = isset($initialOptions->baseUrl)    ? $initialOptions->baseUrl    : '';
         $this->coreStartTime  = isset($initialOptions->startTime)  ? $initialOptions->startTime  : microtime(true);
         $this->coreDeployment = isset($initialOptions->deployment) ? $initialOptions->deployment : null;
-        $this->coreDirectory = realpath(
+        $this->coreDirectory  = realpath(
             isset($initialOptions->scherzoDirectory)
                 ? $initialOptions->scherzoDirectory
                 : __DIR__.'/../..') . DIRECTORY_SEPARATOR;
+        $this->coreServices   = array_merge($this->coreDefaultServices, $this->coreServices);
     }
 
     public function getInitialOption($name, $default = null)

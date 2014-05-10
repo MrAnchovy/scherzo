@@ -17,6 +17,9 @@ $options->startTime = microtime(true);
 
 // no need to modify anything before here =====================================
 
+// For installation in the web root, leave this out
+$options->baseUrl = 'scherzo';
+
 // Leave this outfor production or 'dev'/'test'/'stage'
 // $options->deployment = 'dev';
 $options->deployment = 'coreDev';
