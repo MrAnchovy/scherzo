@@ -86,7 +86,7 @@ class PhpFlow extends \Scherzo\Core\Service
                 $ee = new ScherzoException();
                 $e = $ee->fromException($e);
             }
-            echo $e;
+            $this->displayException($e);
             $this->shutdown();
 
             throw new ScherzoException('Should never get here');
