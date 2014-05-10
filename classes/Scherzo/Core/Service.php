@@ -14,9 +14,7 @@ use Exception, Scherzo\Core\ScherzoException;
 /**
  * Optional foundation for a Scherzo service.
  *
- * Most services in Scherzo\Core extend this class purely for convenience.
- *
- * @package  Scherzo\Core
+ * Most Scherzo services extend this class for convenience.
 **/
 abstract class Service
 {

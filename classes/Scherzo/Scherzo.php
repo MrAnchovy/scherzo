@@ -59,17 +59,13 @@ class Scherzo
     }
 
     /**
-     * Register a service.
+     * List loaded services.
      *
-     * @param  string        $name    The name of the service.
-     * @param  string|array  $service The class name or array defining the service.
+     * @return  array  All loaded services.
     **/
-    public function register($name, $service = null)
+    public function getLoaded()
     {
-        if (is_array($name)) {
-            $this->_registered = array_merge($this->_registered, $name);
-        }
-        $this->_registered[$name] = $service;
+        return $this->_loaded;
     }
 
     /**
@@ -95,6 +91,20 @@ class Scherzo
                 ':service' => $name));
         }
         $this->_loaded[$alias] = new $this->_registered[$name]($this, $alias);
+    }
+
+    /**
+     * Register a service.
+     *
+     * @param  string        $name    The name of the service.
+     * @param  string|array  $service The class name or array defining the service.
+    **/
+    public function register($name, $service = null)
+    {
+        if (is_array($name)) {
+            $this->_registered = array_merge($this->_registered, $name);
+        }
+        $this->_registered[$name] = $service;
     }
 
 } // end class Scherzo

@@ -74,7 +74,7 @@ class Bootstrap
             $container->autoloader = $autoloader;
 
             // register the other services defined in Local so they can be lazy-loaded
-            $container->register(array_merge($local->coreDefaultServices, $local->coreServices));
+            $container->register($local->coreServices);
 
             // lazy-load error, exception and shutdown handling
             $container->phpFlow;
