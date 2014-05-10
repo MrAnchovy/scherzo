@@ -56,10 +56,19 @@ class PhpFlow extends \Scherzo\Core\Service
     protected $progress;
 
     /**
-     * Error handler.
+     * @param  integer  $level
+     * @param  string   $message
+     * @param  string   $file
+     * @param  integer  $line
+     * @param  array    $context  All variables in scope.
     **/
-    public function errorHandler()
+    public function errorHandler($level, $message, $file, $line, $context)
     {
+        // This allows the use of @inculde
+        // @REVISIT consider undesireable side effects
+        if(error_reporting() === 0 && $level === E_WARNING) {
+            return;
+        }
         // rethrow as ScherzoException
         $e = new ScherzoException();
         $e->fromError(func_get_args());
@@ -155,7 +164,7 @@ class PhpFlow extends \Scherzo\Core\Service
                 }
             default :
                 // this should never happen
-                $this->shutdownError('unknown progress value in shutdown');
+                $this->shutdownError("unknown progress value [$this->progress] in shutdown");
                 exit(1);
         }
     }
@@ -187,6 +196,7 @@ class PhpFlow extends \Scherzo\Core\Service
     {
         switch ($this->progress) {
             case self::CONTROLLED_COMPLETE :
+            case self::FATAL_COMPLETE :
                 // $this->shutdownError('shutdown handler normal shutdown (debug message)');
                 // normal shutdown
                 exit(0);
@@ -201,9 +211,8 @@ class PhpFlow extends \Scherzo\Core\Service
                     } else {
                         $e = new ScherzoException('Fatal error trapped but not reported by error_get_last');
                     }
-                    $this->exceptionHandler($e);
+                    $this->displayException($e);
                     $this->shutdown();
-                    $this->progress = self::FATAL_COMPLETE;
                     // $this->shutdownError('shutdown handler fatal error complete (debug message)');
                     exit(1);
                 } catch (Exception $e) {
@@ -221,8 +230,20 @@ class PhpFlow extends \Scherzo\Core\Service
                 $this->shutdownError('fatal error during fatal error handling');
                 exit(1);
             default :
-                $this->shutdownError('unknown progress status in shutdown handler');
+                $this->shutdownError("unknown progress status [$this->progress] in shutdown handler");
                 exit(1);
+        }
+    }
+
+    public function displayException($e)
+    {
+        try {
+            if (include $this->depends->local->coreDirectory.'templates/Scherzo/error/debug.php') {
+            } else {
+                echo 'Could not display debug dump';
+            }
+        } catch (Exception $ee) {
+            echo 'Could not display debug dump';
         }
     }
 }

@@ -1,7 +1,19 @@
 <?php
+/**
+ * This file is part of the Scherzo PHP application framework.
+ *
+ * @link       http://github.com/MrAnchovy/scherzo
+ * @copyright  Copyright © 2014 [MrAnchovy](http://www.mranchovy.com/)
+ * @license    MIT
+**/
 
 namespace Scherzo\Core;
 
+use Exception, Scherzo\Core\ScherzoException;
+
+/**
+ * PSR-4 class autoloader.
+**/
 class Autoloader
 {
     /**
@@ -45,7 +57,7 @@ class Autoloader
             }
             // add the class name
             $path = "$path$class.php";
-            if ( include $path) {
+            if (@include $path) {
                 return $path;
             } else {
                 return false;
@@ -63,4 +75,3 @@ class Autoloader
     }
 
 }
-
