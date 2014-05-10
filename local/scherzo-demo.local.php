@@ -9,4 +9,5 @@
 
 class Local extends Scherzo\Core\Local
 {
+    public $applicationNamespace = '\ScherzoDemo';
 }
