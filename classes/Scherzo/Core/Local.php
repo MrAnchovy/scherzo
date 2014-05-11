@@ -19,6 +19,12 @@ class Local
     /** Initial options set in `index.php`. */
     protected $coreInitialOptions;
 
+    /** The application namespace (set in the application's local.php). */
+    public $coreApplicationDirectory;
+
+    /** The application namespace (set in the application's local.php). */
+    public $coreApplicationNamespace;
+
     /** Set this to an object in the constructor to override the Scherzo autoloader. */
     public $coreAutoloaderObject;
 
@@ -46,7 +52,7 @@ class Local
     /** Force the default timezone. */
     public $coreTimezone;
 
-    public function __construct($initialOptions)
+    final public function __construct($initialOptions)
     {
         $this->coreInitialOptions = $initialOptions;
         $this->coreBaseUrl    = isset($initialOptions->baseUrl)    ? $initialOptions->baseUrl    : '';
@@ -57,6 +63,11 @@ class Local
                 ? $initialOptions->scherzoDirectory
                 : __DIR__.'/../..') . DIRECTORY_SEPARATOR;
         $this->coreServices   = array_merge($this->coreDefaultServices, $this->coreServices);
+        $this->afterConstructor();
+    }
+
+    public function afterConstructor()
+    {
     }
 
     public function getInitialOption($name, $default = null)

@@ -170,6 +170,7 @@ class Bootstrap
             $autoloader = new Autoloader;
         }
         $autoloader->setNamespace('Scherzo', $local->coreDirectory . 'classes');
+        $autoloader->setNamespace($local->coreApplicationNamespace, $local->coreApplicationDirectory . '/classes');
         $autoloader->register();
         return $autoloader;
     }

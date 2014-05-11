@@ -9,5 +9,13 @@
 
 class Local extends Scherzo\Core\Local
 {
-    public $applicationNamespace = '\ScherzoDemo';
+    public $coreApplicationNamespace = 'ScherzoDemo';
+
+    /**
+     * Any settings that need to be done at run-time can be done here.
+    **/
+    public function afterConstructor()
+    {
+        $this->coreApplicationDirectory = __DIR__.'/../applications/demo/';
+    }
 }

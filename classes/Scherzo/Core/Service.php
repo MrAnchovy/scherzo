@@ -36,7 +36,7 @@ abstract class Service
      * Final constructor.
      *
      * This is made final to avoid omission of a call to `parent::__construct()`
-     * in implementing classes. See `afterConstruct()`.
+     * in implementing classes. See `afterConstructor()`.
      *
      * @param  Scherzo\Scherzo  $depends  The dependency injection container.
      * @param  string           $name     The name the service is loaded as.
@@ -45,13 +45,13 @@ abstract class Service
     {
         $this->depends = $depends;
         $this->name = $name;
-        $this->afterConstruct();
+        $this->afterConstructor();
     }
 
     /**
      * Hook to constructor for implementing classes.
     **/
-    protected function afterConstruct()
+    protected function afterConstructor()
     {
     }
 }
