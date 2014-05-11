@@ -14,7 +14,7 @@ use Exception, Scherzo\Core\ScherzoException;
 /**
  * Handle an HTTP request.
 **/
-class HttpRequest
+class HttpRequest extends \Scherzo\Core\Service
 {
     /**
      * Request information parsed from headers
@@ -41,6 +41,12 @@ class HttpRequest
 
     protected $trustedProxies = array();
 
+    public function afterConstructor()
+    {
+        $this->parse();
+    }
+
+
     public function accepts($type = null) {
         $accepts = $this->getHeader('accept');
         if ($type === null) {
@@ -53,7 +59,8 @@ class HttpRequest
     public function parse() {
         $this->scriptName    = isset($_SERVER['SCRIPT_NAME'])           ? $_SERVER['SCRIPT_NAME'] : null;
         $this->host          = isset($_SERVER['HTTP_HOST'])             ? $_SERVER['HTTP_HOST'] : null;
-        $this->path          = isset($_SERVER['REQUEST_URI'])           ? ltrim($this->getServer('REQUEST_URI'), '/') : null;
+        // $this->path          = isset($_SERVER['REQUEST_URI'])           ? ltrim($this->getServer('REQUEST_URI'), '/') : null;
+        $this->path          = isset($_SERVER['REQUEST_URI'])           ? $_SERVER['REQUEST_URI'] : '/';
         $this->protocol      = isset($_SERVER['SERVER_PROTOCOL'])       ? $_SERVER['SERVER_PROTOCOL'] : 'HTTP/1.1';
         $this->method        = isset($_SERVER['REQUEST_METHOD'])        ? $_SERVER['REQUEST_METHOD'] : 'GET';
         $this->referer       = isset($_SERVER['HTTP_REFERER'])          ? $_SERVER['HTTP_REFERER'] : null;
@@ -119,10 +126,6 @@ class HttpRequest
         } else {
             return array_key_exists($name, $this->params) ? $this->params[$name] : $default;
         }
-    }
-
-    protected function getServer($key, $default = null) {
-        return isset($_SERVER[$key]) ? $_SERVER[$key] : $default;
     }
 
     public function getQuery($name = null, $default = null)

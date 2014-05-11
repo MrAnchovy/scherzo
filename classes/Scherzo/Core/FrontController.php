@@ -29,18 +29,18 @@ class FrontController extends \Scherzo\Core\Service
         // $request->log($log);
 
         // strip the base url from the beginning of the path
-        $path = substr($this->depends->request->path, strlen($this->depends->local->coreBaseUrl) - 1);
+        $path = substr($this->depends->request->path, strlen($this->depends->local->coreBaseUrl));
 
         // $route = $this->depends->route->parse($path);
-        $route = $this->parseRoute($path);
+        $route = $this->getRoute($path);
 
         // get the controller class
         // print_r($route);
         // return;
-        $appns = $this->depends->local->applicationNamespace;
+        $appns = $this->depends->local->coreApplicationNamespace;
         $controller = $route['controller'] === null
-            ? "$appns\\Controller\\DefaultController"
-            : "$appns\\Controller\\Controller_$route[controller]";
+            ? "$appns\\Controllers\\DefaultController"
+            : "$appns\\Controllers\\Controller_$route[controller]";
 
         try {
             // check the case matches (PHP class names are case insensitive)
@@ -53,55 +53,36 @@ class FrontController extends \Scherzo\Core\Service
         if (empty($success)) {
             $message = 'I can\'t find :c';
             $vars = array(':c' => htmlspecialchars($route['controller']));
-            $controller = new $this->depends->local->coreErrorController;
-            $controller->execute(404);
+            $controller = new $this->depends->local->coreErrorController($this->depends);
+            $controller->execute_404($route);
+        } else {
+            $controller = new $controller($this->depends);
+
+            $controller->execute($route);
         }
-
-        $controller = new $controller($this->depends);
-
-        $controller->execute($route);
     }
 
-    /**
-     * extract the controller from the route
-     *
-     * @param  Request
-    **/
-    public function parseRoute($path)
+    protected function getRoute($path)
     {
-
-        //          @^                                           ($)@U   match start and end, ungreedy
-        //            (?:(.*)                    )                       match the controller, ignoring the wrapper       [1]
-        //                   (?:/(.*)          )?                        match the id if any, ignoring the wrapper        [2]
-        //                           (?:/(.*))?                          match the rest if any, ignoring the wrapper      [3]
-        //                                        (?:\.([^/.]+))?        match the extension if any, ignoring the wrapper [4]
-        // $pattern = '@^(?:(.*)(?:/(.*)(?:/(.*))?)?)(?:\.([^/.]+))?($)@U';
-
-        // you just can't beat regex parsing for this
-        //          @^                                 ($)@U   match start and end, ungreedy
-        //            (?:(.*)          )                       match the controller, ignoring the wrapper              [1]
-        //                   (?:/(.*))?                        match the rest of the path if any, ignoring the wrapper [2]
-        //                              (?:\.([^/.]+))?        match the extension if any, ignoring the wrapper        [3]
-        $pattern = '@^(?:(.*)(?:/(.*))?)(?:\.([^/.]+))?($)@U';
-        preg_match($pattern, $path, $matches);
-
-        return array(
-            'controller' => $matches[2] === '' ? null : ($matches[1] === '' ? null : $matches[1]),
-            'parts'      => $matches[2] === '' ? ($matches[1] === '' ? null : array($matches[1])) : explode('/', $matches[2]),
-            'extension'  => $matches[3] === '' ? null : $matches[3],
-        );
-
+        $route = array();
+        $parts = explode('/', $path);
+        $count = count($parts);
+        if ($count < 2) {
+            $route['controller'] = null;
+        } else {
+            $route['controller'] = $parts[0];
+        }
+        if ($count > 0) {
+            $last = $parts[$count - 1];
+            if (($pos = strrpos($last, '.')) !== false) {
+                $parts[$count - 1] = substr($last, 0, $pos);
+                $route['extension'] = substr($last, $pos + 1);
+            } else {
+                $route['extension'] = null;
+            }
+        }
+        $route['parts'] = $parts;
+        return $route;
     }
 
 }
-
-
-class Deprecated_FrontController
-{
-    protected $depends;
-
-
-
-
-} // end class FrontController
-

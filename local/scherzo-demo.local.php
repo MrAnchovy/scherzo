@@ -16,6 +16,6 @@ class Local extends Scherzo\Core\Local
     **/
     public function afterConstructor()
     {
-        $this->coreApplicationDirectory = __DIR__.'/../applications/demo/';
+        $this->coreApplicationDirectory = __DIR__.'/../examples/demo/';
     }
 }

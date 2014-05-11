@@ -17,8 +17,9 @@ use Exception, Scherzo\Core\ScherzoException;
 class ErrorController
 {
 
-    public function execute($route)
+    public function execute_404($route)
     {
-        echo microtime(true) . ' 404 page';
+        echo '404 page';
+        print_r($route);
     }
 }
