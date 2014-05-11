@@ -64,11 +64,6 @@ class PhpFlow extends \Scherzo\Core\Service
     **/
     public function errorHandler($level, $message, $file, $line, $context)
     {
-        // This allows the use of @inculde
-        // @REVISIT consider undesireable side effects
-        if(error_reporting() === 0 && $level === E_WARNING) {
-            return;
-        }
         // rethrow as ScherzoException
         $e = new ScherzoException();
         $e->fromError(func_get_args());
@@ -111,7 +106,7 @@ class PhpFlow extends \Scherzo\Core\Service
     /**
      * Set up error and exception handling.
     **/
-    protected function afterConstruct() {
+    protected function afterConstructor() {
         ini_set('display_errors', 0);
         error_reporting(-1);
         // @todo REVISIT there is probably a best order to do these in

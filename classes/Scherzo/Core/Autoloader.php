@@ -36,9 +36,8 @@ class Autoloader
      * Loads the class file for a given class name.
      *
      * This implementation does not check if the file exists before including
-     * it. This is OK as long as there is an error_handler that turns the
-     * PHP WARNING into an exception that can be caught (which is normally
-     * the case) or error_reporting is set to an appropriate level.
+     * it for efficiency, which is fine for the autoloading strategy used (each
+     * namespace has only one base directory).
      *
      * @param  string $class The fully-qualified class name.
     **/
@@ -57,7 +56,8 @@ class Autoloader
             }
             // add the class name
             $path = "$path$class.php";
-            if (@include $path) {
+
+            if (include $path) {
                 return $path;
             } else {
                 return false;
@@ -69,9 +69,7 @@ class Autoloader
 
     public function setNamespace($namespace, $path)
     {
-
         $this->namespaces[$namespace] = realpath($path) . DIRECTORY_SEPARATOR;
-
     }
 
 }
